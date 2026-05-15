@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 // Change to "/homevideo.mp4" if your video is in the public folder!
 import bgVideo from "../assets/homevideo.mp4";
 
 const HeroSection = () => {
+  // Track if the video has loaded enough to play
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
   return (
     <section className="hero-container">
       {/* INTERNAL CSS */}
@@ -41,6 +44,9 @@ const HeroSection = () => {
             object-position: center center; /* This locks the camera to the exact middle of the video */
             
             z-index: 1;
+            /* Smoothly fade video in when loaded */
+            opacity: ${videoLoaded ? 1 : 0};
+            transition: opacity 0.5s ease-in-out;
           }
 
           /* SMALL WHITE TAG FLOATING OFF THE EDGE */
@@ -60,7 +66,8 @@ const HeroSection = () => {
             
             opacity: 0;
             transform: translateY(20px);
-            animation: slideUpTag 0.8s ease-out 0.5s forwards;
+            /* Only animate the tag when video is ready */
+            animation: ${videoLoaded ? "slideUpTag 0.8s ease-out 0.2s forwards" : "none"};
           }
 
           @keyframes slideUpTag {
@@ -96,11 +103,83 @@ const HeroSection = () => {
             color: transparent;
             display: inline-block;
           }
+
+          /* PREMIUM CONSTRUCTION LOADER BRACKET */
+          .construction-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0b0b0f;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: ${videoLoaded ? 0 : 1};
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+          }
+
+          .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+          }
+
+          /* Elegant structural Blueprint-style loader circle */
+          .building-ring {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(149, 122, 180, 0.1);
+            border-top: 3px solid #62579c;
+            border-right: 3px solid #957ab4;
+            border-radius: 50%;
+            animation: spinStructural 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+          }
+
+          .loader-text {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin: 0;
+            animation: pulseText 1.8s ease-in-out infinite;
+          }
+
+          @keyframes spinStructural {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          @keyframes pulseText {
+            0%, 100% { opacity: 0.6; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+          }
         `}
       </style>
 
+      {/* NEW: PREMIUM CONSTRUCTION LOADER */}
+      <div className="construction-loader">
+        <div className="loader-content">
+          <div className="building-ring"></div>
+          <h2 className="loader-text">Divya Enterprise</h2>
+        </div>
+      </div>
+
       {/* BACKGROUND VIDEO */}
-      <video autoPlay loop muted playsInline className="hero-video">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="hero-video"
+        onCanPlay={() => setVideoLoaded(true)} // Tells React the moment video data is ready
+      >
         <source src={bgVideo} type="video/mp4" />
       </video>
 
