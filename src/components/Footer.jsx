@@ -48,7 +48,7 @@ const Footer = () => {
       backgroundImage: `linear-gradient(to right, rgba(26, 25, 77, 0.95), rgba(40, 40, 45, 0.92)), url(${footerBg})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
-      backgroundAttachment: "fixed", // Gives a slight parallax effect
+      backgroundAttachment: "fixed", // Gives a slight parallax effect on desktop
       borderTop: `4px solid ${colors.accent}`,
       paddingTop: "60px",
     },
@@ -188,6 +188,13 @@ const Footer = () => {
   return (
     <footer className="refined-footer" style={styles.footerWrapper}>
       <style>{`
+        /* FIX FOR iOS BACKGROUND SCALING BUG */
+        @supports (-webkit-touch-callout: none) {
+          .refined-footer {
+            background-attachment: scroll !important;
+          }
+        }
+
         .footer-cta-btn:hover {
           background-color: ${colors.white} !important;
           transform: translateY(-3px);
@@ -202,6 +209,10 @@ const Footer = () => {
           }
           .footer-brand-col {
             grid-column: span 2;
+          }
+          /* Disables parallax on mobile devices to prevent the zooming glitch */
+          .refined-footer {
+            background-attachment: scroll !important;
           }
         }
         @media (max-width: 768px) {
