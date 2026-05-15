@@ -4,32 +4,34 @@ import { motion, AnimatePresence } from "framer-motion";
 const Loader = ({ setLoading }) => {
   const [progress, setProgress] = useState(0);
 
-  // Smooth, realistic loading simulation
+  // 40% FASTER LOADING SPEEDS: Changed interval delay from 70ms down to 42ms
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         if (oldProgress >= 100) {
           clearInterval(timer);
-          setTimeout(() => setLoading(false), 1200); // Hold at 100% briefly before the smooth exit
+          // Speed up the post-loading hold duration by 40% (1200ms -> 720ms)
+          setTimeout(() => setLoading(false), 720);
           return 100;
         }
         const diff = Math.random() * 4 + 1;
         return Math.min(oldProgress + diff, 100);
       });
-    }, 70);
+    }, 42); // 70ms * 0.6 = 42ms
 
     return () => clearInterval(timer);
   }, [setLoading]);
 
-  // Framer Motion variants for the complex blueprint drawing
+  // Framer Motion variants for the complex blueprint drawing (Accelerated by 40%)
   const drawSketch = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
       pathLength: 1,
       opacity: 1,
       transition: {
-        pathLength: { type: "tween", duration: 3.5, ease: "easeInOut" },
-        opacity: { duration: 0.3 },
+        // 3.5s -> 2.1s duration for blueprint drawing strings
+        pathLength: { type: "tween", duration: 2.1, ease: "easeInOut" },
+        opacity: { duration: 0.18 }, // 0.3s -> 0.18s
       },
     },
   };
@@ -40,8 +42,8 @@ const Loader = ({ setLoading }) => {
       pathLength: 1,
       opacity: 0.3,
       transition: {
-        pathLength: { type: "tween", duration: 2 },
-        opacity: { duration: 1 },
+        pathLength: { type: "tween", duration: 1.2 }, // 2s -> 1.2s
+        opacity: { duration: 0.6 }, // 1s -> 0.6s
       },
     },
   };
@@ -64,7 +66,7 @@ const Loader = ({ setLoading }) => {
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            transition={{ duration: 0.9, ease: "easeOut" }} // 1.5s -> 0.9s
             style={styles.svgContainer}
           >
             {/* Highly detailed Industrial CAD Blueprint SVG */}
